@@ -37,10 +37,12 @@ int main()
     // i.e., neither a reference nor a pointer.
 
 
-    // First example with int.
+    // First example with int type.
     cgc<int> gc_integers;
 
-    // cal cgc<T>::alloc( size_t n = 1 ) to allocate an array of type T with 'n' elements
+    // Call cgc<T>::alloc( size_t n = 1 ) to allocate an array of type T with
+    // 'n' elements, each element of which being automatically initialized to
+    // T{}. 
     int *iptr0 = gc_integers.alloc(); // it defaults to n = 1
     *iptr0 = 0;
 
@@ -57,17 +59,29 @@ int main()
         *iptr2 = 2;
     }
 
-    // cal cgc<T>::free( T* ptr ) to manually free the memory pointed by 'ptr'
-    gc_integers.free(iptr1);
+    // Call cgc<T>::free( T* ptr ) to manually free memory pointed by 'ptr'.
+    // Notice that a cgc instance will refuse to free memory it has not
+    // allocated itself.  
+    printf("Trying to manually free iptr1: ");
+    gc_integers.free(&iptr1);
+
+    bool success = (iptr1 == (int *) NULL);
+    if ( success )
+        printf("success.\n");
+    else
+        printf("failure.\n");
 
 
-    // And now to manage C type strings
+    // And now to manage C type strings:
     cgc<char> gc_chars;
 
     char *word = gc_chars.alloc(256); // no more than 255 letters in this word
+    // gc_chars.alloc() is automatically performing: 
+    /* for ( size_t i = 0; i < 256; ++i ) */
+    /*     word[i] = '\0'; */
     word[0] = 'O'; word[1] = 'k'; word[2] = '\0';
 
-    printf( "\nMy word is %s\n", word );
+    printf( "My word is %s.\n", word );
 
 
     // Of course it works with structs as well as primitive types
@@ -82,7 +96,10 @@ int main()
     Barista *bptr = gc_baristas.alloc();
 
     bptr->age = 32;
-    bptr->name = gc_chars.alloc(256); // but you must remember to initialize it 
+    bptr->name = gc_chars.alloc(256); 
+    // gc_chars.alloc() is automatically performing: 
+    /* for ( size_t i = 0; i < 256; ++i ) */
+    /*     bptr->name[i] = '\0'; */
 
     char name[4] = { 'F', 'o', 'o', '\0' }; 
     for ( int i = 0; i < 4; ++i )
@@ -90,7 +107,7 @@ int main()
         bptr->name[i] = name[i];
     }
 
-    printf( "\nBarista %s is %d years old.\n", bptr->name, (int)bptr->age);
+    printf( "Barista %s is %d years old.\n", bptr->name, (int)bptr->age);
 
 
     // When objects instantiated from cgc<T> (such as 'gc_integers', 'gc_chars'

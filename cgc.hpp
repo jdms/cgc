@@ -25,7 +25,9 @@
 #define __CGC_HPP__
 
 
-#include <malloc.h>
+#ifdef _WIN32
+    #include <malloc.h>
+#endif
 #include <cstdlib>
 #include <vector>
 #include <type_traits>
@@ -41,7 +43,9 @@ class cgc {
             typename U = T /* dummy type U must depend on T for SFINAE to kick in */, 
             typename std::enable_if< 
                 std::is_convertible<U, T>::value 
-                && std::is_object<U>::value 
+                && std::is_trivial<U>::value 
+                && std::is_standard_layout<U>::value 
+                /* && std::is_object<U>::value */ 
                 && !std::is_pointer<U>::value >::type* = nullptr>
         cgc() 
         {
@@ -67,27 +71,35 @@ class cgc {
 
             T* mem_ptr = (T*) malloc( n * sizeof(T) );
 
-            ptr_list.push_back(mem_ptr);
+            if ( mem_ptr != (T*) NULL )
+            {
+                ptr_list.push_back(mem_ptr);
+
+                for ( size_t i = 0; i < n; ++i )
+                {
+                    mem_ptr[i] = T{};
+                }
+            }
 
             return mem_ptr;
         }
 
-        void free( T* ptr )
+        void free( T** ptr )
         {
-            if ( ptr == (T*) NULL )
+            if ( *ptr == (T*) NULL )
             {
                 return;
             }
 
             for ( auto &p : ptr_list )
             {
-                if ( p == ptr )
+                if ( p == *ptr )
                 {
+                    ::free(*ptr);
+                    *ptr = (T*) NULL;
                     p = (T*) NULL;
                 }
             }
-
-            ::free(ptr);
         }
 
     private:
