@@ -33,12 +33,17 @@
 #include <type_traits>
 
 
+///
+/// cgc<T> is a simple garbage collector to do C type memory management in C++ code.
+///
+
 template<typename T>
 class cgc {
     public:
         using type = T;
 
-        /* ctor is only defined when type T represents an /object/ that is not a /pointer/ */ 
+        /// ctor is only defined when type T has a POD (C plain old data) like
+        /// memory layout and is not a pointer 
         template<
             typename U = T /* dummy type U must depend on T for SFINAE to kick in */, 
             typename std::enable_if< 
@@ -51,6 +56,7 @@ class cgc {
         {
         }
 
+        /// dtor frees all of the remaining allocated memory
         ~cgc()
         {
             for ( auto &p : ptr_list )
@@ -62,6 +68,7 @@ class cgc {
             }
         }
 
+        /// alloc returns pointer to n*sizeof(T) (already initialized) memory blocks
         T* alloc( size_t n = 1 )
         {
             if ( n == 0 )
@@ -84,6 +91,7 @@ class cgc {
             return mem_ptr;
         }
 
+        /// free deallocates memory previously allocated by same instance of class
         void free( T** ptr )
         {
             if ( *ptr == (T*) NULL )

@@ -30,38 +30,70 @@
 #include "cgc.hpp"
 
 
-int main()
-{
+int main() {
+
     // To manage C memory, one first has to instantiate an object of the cgc<T>
     // class.  Type T must be such that sizeof(T) returns a meaningful number,
-    // i.e., neither a reference nor a pointer.
+    // i.e., neither a reference nor a pointer.  More specifically, cgc<T> ctor
+    // uses SFINAE to allow instantiation only if T is a (1) trivial, (2)
+    // standard layout and (3) non pointer type. 
 
 
-    // First example with int type.
+    //// First example: int type. //////////////////////////////////////////////
+
     cgc<int> gc_integers;
 
     // Call cgc<T>::alloc( size_t n = 1 ) to allocate an array of type T with
-    // 'n' elements, each element of which being automatically initialized to
-    // T{}. 
-    int *iptr0 = gc_integers.alloc(); // it defaults to n = 1
-    *iptr0 = 0;
+    // 'n' elements, each element of which being also _automatically
+    // initialized_ to T{}. 
 
-    int *iptr1 = gc_integers.alloc(10);
-    for ( int i = 0; i < 10; ++i )
+    int *iptr0 = gc_integers.alloc(); // it defaults to n = 1
+    // gc_integers.alloc() is automatically performing: 
+    /* for ( size_t i = 0; i < 1; ++i ) */
+    /*     iptr0[i] = 0; */
+
+    *iptr0 = 1;
+
+
+    //// Second example: int[] type. ///////////////////////////////////////////
+
+    int *iptr1 = gc_integers.alloc(1024*1024);
+    // gc_integers.alloc() is automatically performing: 
+    /* for ( size_t i = 0; i < 1024*1024; ++i ) */
+    /*     iptr1[i] = 0; */
+
+    // not going through all of it, you've got the idea...
+    for ( int i = 0; i < 10; ++i ) 
         iptr1[i] = i+1;
 
+
+    //// Third example: inside a new scope. ////////////////////////////////////
     {
         // Pointer 'iptr2' is created inside this scope and destroyed right
         // away.  This is not a problem, as 'gc_integers' holds a copy that
         // points to the same memory, which will be freed when 'gc_integers'
         // itself is destroyed.  
-        int *iptr2 = gc_integers.alloc(1024);
+   
+        int *iptr2 = gc_integers.alloc(10);
+        // gc_integers.alloc() is automatically performing: 
+        /* for ( size_t i = 0; i < 10; ++i ) */
+        /*     iptr3[i] = 0; */
+        
         *iptr2 = 2;
     }
 
-    // Call cgc<T>::free( T* ptr ) to manually free memory pointed by 'ptr'.
-    // Notice that a cgc instance will refuse to free memory it has not
-    // allocated itself.  
+
+    //// Forth example: use cgc<T>::free(T**) to destroy large objects early. //
+
+    // Call cgc<T>::free( T** ptr ) to manually free memory pointed by 'ptr' at
+    // any time.  If successful it will return a (T*) NULL value.  Notice that
+    // this signature, differently from the free( void* ) that is available in
+    // <cstdlib>, expects a pointer to a pointer.  
+    //
+    // This is handy to destroy large objects earlier, if memory availability
+    // is a concern.  Notice that a cgc instance will refuse to free memory it
+    // has not allocated itself.  
+
     printf("Trying to manually free iptr1: ");
     gc_integers.free(&iptr1);
 
@@ -72,19 +104,22 @@ int main()
         printf("failure.\n");
 
 
-    // And now to manage C type strings:
+    //// Fifth example: managing C strings. ////////////////////////////////////
+
     cgc<char> gc_chars;
 
     char *word = gc_chars.alloc(256); // no more than 255 letters in this word
     // gc_chars.alloc() is automatically performing: 
     /* for ( size_t i = 0; i < 256; ++i ) */
     /*     word[i] = '\0'; */
+
     word[0] = 'O'; word[1] = 'k'; word[2] = '\0';
 
     printf( "My word is %s.\n", word );
 
 
-    // Of course it works with structs as well as primitive types
+    //// Sixth example: managing C structs. ////////////////////////////////////
+
     struct Barista {
         double age;
         char *name;
@@ -94,6 +129,9 @@ int main()
     cgc<Barista> gc_baristas;
 
     Barista *bptr = gc_baristas.alloc();
+    // gc_baristas.alloc() is automatically performing: 
+    /* for ( size_t i = 0; i < 1; ++i ) */
+    /*     bptr[i] = Barista{}; */
 
     bptr->age = 32;
     bptr->name = gc_chars.alloc(256); 
