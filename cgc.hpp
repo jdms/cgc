@@ -42,10 +42,9 @@ class cgc {
     public:
         using type = T;
 
-        /// ctor is only defined when type T has a POD (C plain old data) like
-        /// memory layout and is not a pointer 
+        /// ctor is only defined when type T has a POD (C plain old data) like memory layout and is not a pointer 
         template<
-            typename U = T /* dummy type U must depend on T for SFINAE to kick in */, 
+            typename U = T, /* dummy type U must depend on T for SFINAE to kick in */ 
             typename std::enable_if< 
                 std::is_convertible<U, T>::value 
                 && std::is_trivial<U>::value 
@@ -91,7 +90,7 @@ class cgc {
             return mem_ptr;
         }
 
-        /// free deallocates memory previously allocated by same instance of class
+        /// free deallocates memory previously allocated by same instance of class and clears ptr
         void free( T** ptr )
         {
             if ( *ptr == (T*) NULL )
