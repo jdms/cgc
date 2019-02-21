@@ -118,7 +118,7 @@ int main() {
     // has not allocated itself.  
 
     printf("Trying to manually free iptr1: ");
-    gc_integers.free(&iptr1);
+    gc_integers.free(iptr1);
 
     bool success = (iptr1 == (int *) NULL);
     if ( success )

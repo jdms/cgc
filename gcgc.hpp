@@ -77,16 +77,16 @@ class gcgc {
         }
 
         /// free deallocates memory previously allocated by same instance of class and clears ptr
-        void free( T** ptr )
+        void free( T* &ptr )
         {
-            if ( *ptr == (T*) NULL )
+            if ( ptr == (T*) NULL )
             {
                 return;
             }
 
-            if ( gc.free(*ptr) == true )
+            if ( gc.free(ptr) == true )
             {
-                *ptr = (T*) NULL;
+                ptr = (T*) NULL;
             }
         }
 

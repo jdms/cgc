@@ -103,19 +103,19 @@ class cgc {
         }
 
         /// free deallocates memory previously allocated by same instance of class and clears ptr
-        void free( T** ptr )
+        void free( T* &ptr )
         {
-            if ( *ptr == (T*) NULL )
+            if ( ptr == (T*) NULL )
             {
                 return;
             }
 
             for ( auto &p : ptr_list )
             {
-                if ( p == *ptr )
+                if ( p == ptr )
                 {
-                    ::free(*ptr);
-                    *ptr = (T*) NULL;
+                    ::free(ptr);
+                    ptr = (T*) NULL;
                     p = (T*) NULL;
                 }
             }
