@@ -23,11 +23,34 @@
 
 // This file is both a document and a test, as it shows how to use the `cgc`
 // class for common memory management tasks, and its compiled binary can be
-// used as input to valgrind to check whether there are any issues with `cgc`'s
-// memory management. 
+// used as input to valgrind to check whether there are any issues with either
+// `cgc`'s or `ggc`'s memory management. 
 
 #include <cstdio>
-#include "cgc.hpp"
+
+
+// If you really need to use this code, and you have a single (or a few) types
+// for which you want to allocate pre-initialized C memory, please use class
+// `cgc<T>` that is self-contained.
+//
+// If you don't want the memory to be pre-initialized or you want to manage
+// memory allocated for multiple types with a single collector, please use class
+// `ggc`. 
+//
+// Class `gcgc<T>` is meant to test the garbage garbage-collector `ggc`, both
+// `cgc<T>` and `gcgc<T>` expose the same API.  Do not use class 'gcgc<T>'.
+
+/* #define USE_GCGC */
+#if defined(USE_GCGC)
+    // Class `gcgc.hpp` is just meant to test class `ggc`, do not use it.
+    #include "gcgc.hpp"
+    template<typename T>
+    using cgc = gcgc<T>;
+
+#else
+    #include "cgc.hpp"
+
+#endif
 
 
 int main() {

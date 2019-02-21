@@ -21,8 +21,8 @@
 /* SOFTWARE. */
 
 
-#ifndef __CGC_HPP__
-#define __CGC_HPP__
+#ifndef CGC_HPP
+#define CGC_HPP
 
 
 #ifdef _WIN32
@@ -67,8 +67,20 @@ class cgc {
             }
         }
 
+        /// deleted copy ctor
+        cgc(const cgc&) = delete;
+
+        /// deleted copy assigment
+        cgc& operator=(const cgc&) = delete;
+
+        /// default move ctor
+        cgc(cgc&&) = default;
+
+        /// default move assigment
+        cgc& operator=(cgc&&) = default;
+
         /// alloc returns pointer to n*sizeof(T) (already initialized) memory blocks
-        T* alloc( size_t n = 1 )
+        T* alloc( std::size_t n = 1 )
         {
             if ( n == 0 )
             {
@@ -81,7 +93,7 @@ class cgc {
             {
                 ptr_list.push_back(mem_ptr);
 
-                for ( size_t i = 0; i < n; ++i )
+                for ( std::size_t i = 0; i < n; ++i )
                 {
                     mem_ptr[i] = T{};
                 }
