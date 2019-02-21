@@ -1,3 +1,5 @@
+CXX=clang++
+
 .NOTPARALLEL:
 all: run clean
 
@@ -7,7 +9,7 @@ build:
 	@echo "Building test:"
 	@echo "********************************************************************"
 	@echo "\n" 
-	clang++ -Wall -ggdb3 -std=c++11 readme.cpp -o main_tests
+	${CXX} -Wall -ggdb3 -std=c++11 readme.cpp -o main_tests
 	@echo "\n" 
 	@echo "\n" 
 
