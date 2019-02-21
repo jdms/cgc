@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# This script uses valgrind to check whether cgc is working properly or not.
-# valgrind will perform a full leak analysis on the 'main' binary, and report
-# any possible mismanagement of memory.
+# This script uses valgrind to check whether cgc/ggc is working properly or
+# not.  valgrind will perform a full leak analysis on the 'main' binary, and
+# report any possible mismanagement of memory.
 
 valgrind --leak-check=full \
          --show-leak-kinds=all \
@@ -16,4 +16,4 @@ echo -e "*******************************************************"
 echo -e " Valgrind output was saved to file: 'valgrind-out.txt'"
 echo -e "*******************************************************\n"
 
-cat valgrind-out.txt
+cat ./valgrind-out.txt

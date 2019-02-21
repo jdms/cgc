@@ -9,7 +9,7 @@ build:
 	@echo "Building test:"
 	@echo "********************************************************************"
 	@echo "\n" 
-	${CXX} -Wall -ggdb3 -std=c++11 readme.cpp -o main_tests
+	${CXX} -Wall -ggdb3 -std=c++11 -I./ -I./debug readme.cpp -o main_tests
 	@echo "\n" 
 	@echo "\n" 
 
@@ -18,7 +18,7 @@ run: build
 	@echo "Running test:"
 	@echo "********************************************************************"
 	@echo "\n" 
-	@./run_valgrind.sh
+	@./debug/run_valgrind.sh
 	@echo "\n" 
 	@echo "\n" 
 

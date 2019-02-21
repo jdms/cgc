@@ -40,10 +40,10 @@
 // Class `gcgc<T>` is meant to test the garbage garbage-collector `ggc`, both
 // `cgc<T>` and `gcgc<T>` expose the same API.  Do not use class 'gcgc<T>'.
 
-/* #define USE_GCGC */
+#define USE_GCGC
 #if defined(USE_GCGC)
     // Class `gcgc.hpp` is just meant to test class `ggc`, do not use it.
-    #include "gcgc.hpp"
+    #include "debug/gcgc.hpp"
     template<typename T>
     using cgc = gcgc<T>;
 
