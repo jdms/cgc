@@ -105,6 +105,20 @@ class ggc {
             return false;
         }
 
+        /// clear frees all of the remaining allocated memory
+        void clear()
+        {
+            for ( auto &p : ptr_list )
+            {
+                if ( p != (void*) NULL )
+                {
+                    ::free(p);
+                }
+            }
+
+            ptr_list.clear();
+        }
+
     private:
         std::vector<void*> ptr_list{};
 };

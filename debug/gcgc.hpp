@@ -90,6 +90,12 @@ class gcgc {
             }
         }
 
+        /// clear frees all of the remaining allocated memory
+        void clear()
+        {
+            gc.clear();
+        }
+
     private:
         ggc gc;
 };

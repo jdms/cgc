@@ -121,6 +121,20 @@ class cgc {
             }
         }
 
+        /// clear frees all of the remaining allocated memory
+        void clear()
+        {
+            for ( auto &p : ptr_list )
+            {
+                if ( p != (T*) NULL )
+                {
+                    ::free(p);
+                }
+            }
+
+            ptr_list.clear();
+        }
+
     private:
         std::vector<T*> ptr_list{};
 };
