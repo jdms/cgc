@@ -43,15 +43,9 @@ class ggc {
         ggc() = default;
 
         /// dtor frees all of the remaining allocated memory
-        ~ggc()
+        virtual ~ggc()
         {
-            for ( auto &p : ptr_list )
-            {
-                if ( p != (void*) NULL )
-                {
-                    ::free(p);
-                }
-            }
+            ggc::clear();
         }
 
         /// deleted copy ctor

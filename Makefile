@@ -9,7 +9,7 @@ build:
 	@echo "Building test:"
 	@echo "********************************************************************"
 	@echo "\n" 
-	${CXX} -Wall -ggdb3 -std=c++11 -I./ -I./debug readme.cpp -o main_tests
+	${CXX} -Wall -Wextra -ggdb3 -std=c++11 -I./ -I./debug readme.cpp -o main_tests
 	@echo "\n" 
 	@echo "\n" 
 
