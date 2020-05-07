@@ -21,8 +21,8 @@
 /* SOFTWARE. */
 
 
-#ifndef GGC_HPP
-#define GGC_HPP
+#ifndef GARBAGE_GARBAGE_COLLECTOR_HPP
+#define GARBAGE_GARBAGE_COLLECTOR_HPP
 
 
 #ifdef _WIN32
