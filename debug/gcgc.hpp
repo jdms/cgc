@@ -28,14 +28,13 @@
 #include "ggc.hpp"
 
 
+namespace jdms {
+
 ///
 /// `gcgc<T>` uses `ggc` as an example to do C type memory management in C++ code.
 ///
 /// This class is meant to test ggc, if you think you need it then use `cgc<T>` instead.
 ///
-
-namespace jdms {
-
 template<typename T>
 class gcgc {
     public:

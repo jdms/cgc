@@ -33,12 +33,11 @@
 #include <type_traits>
 
 
+namespace jdms {
+
 ///
 /// cgc<T> is a simple garbage collector to do C type memory management in C++ code.
 ///
-
-namespace jdms {
-
 template<typename T>
 class cgc {
     public:

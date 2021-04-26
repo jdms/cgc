@@ -32,12 +32,11 @@
 #include <vector>
 
 
+namespace jdms {
+
 ///
 /// garbage garbage-collector (ggc): wraps C malloc() and free() for RAII memory management
 ///
-
-namespace jdms {
-
 class ggc {
     public:
 
