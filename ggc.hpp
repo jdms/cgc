@@ -36,6 +36,8 @@
 /// garbage garbage-collector (ggc): wraps C malloc() and free() for RAII memory management
 ///
 
+namespace jdms {
+
 class ggc {
     public:
 
@@ -116,5 +118,7 @@ class ggc {
     private:
         std::vector<void*> ptr_list{};
 };
+
+} // namespace jdms
 
 #endif

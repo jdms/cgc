@@ -37,6 +37,8 @@
 /// cgc<T> is a simple garbage collector to do C type memory management in C++ code.
 ///
 
+namespace jdms {
+
 template<typename T>
 class cgc {
     public:
@@ -138,5 +140,7 @@ class cgc {
     private:
         std::vector<T*> ptr_list{};
 };
+
+} // namespace jdms
 
 #endif

@@ -34,6 +34,8 @@
 /// This class is meant to test ggc, if you think you need it then use `cgc<T>` instead.
 ///
 
+namespace jdms {
+
 template<typename T>
 class gcgc {
     public:
@@ -99,5 +101,7 @@ class gcgc {
     private:
         ggc gc;
 };
+
+} // namespace jdms
 
 #endif

@@ -45,13 +45,12 @@
     // Class `gcgc.hpp` is just meant to test class `ggc`, do not use it.
     #include "debug/gcgc.hpp"
     template<typename T>
-    using cgc = gcgc<T>;
+    using cgc = jdms::gcgc<T>;
 
 #else
     #include "cgc.hpp"
-
+    using namespace jdms;
 #endif
-
 
 int main() {
 
