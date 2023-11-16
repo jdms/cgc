@@ -5,20 +5,25 @@
 # report any possible mismanagement of memory.
 
 if [ $(command -v valgrind) ]; then
-    valgrind --leak-check=full \
+    valgrind \
+        --leak-check=full \
         --show-leak-kinds=all \
         --track-origins=yes \
         --verbose \
         --log-file=valgrind-out.txt \
+        --error-exitcode=1 \
         ./main_tests
 
-    echo -e "\n" 
-    echo -e "*******************************************************"
-    echo -e " Valgrind output was saved to file: 'valgrind-out.txt'"
-    echo -e "*******************************************************\n"
-
-    cat ./valgrind-out.txt
+    if [ $? -eq 0 ]
+    then
+        echo -e "\n" 
+        echo -e "---> Test successful."
+    else
+        echo -e "\n" 
+        echo -e "---> ERROR: valgrind output was saved to file 'valgrind-out.txt'"
+        exit 1
+    fi
 else
-    echo -e "-- [valgrind] not found, running executable...\n"
-    ./main_tests
+    echo -e "*** Valgrind is required to run tests!\n"
+    exit 2
 fi

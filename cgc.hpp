@@ -28,7 +28,7 @@
 #ifdef _WIN32
     #include <malloc.h>
 #endif
-#include <cstdlib>
+#include <stdlib.h>
 #include <vector>
 #include <type_traits>
 
@@ -36,7 +36,7 @@
 namespace jdms {
 
 ///
-/// cgc<T> is a simple garbage collector to do C type memory management in C++ code.
+/// `cgc<T>` wraps calloc() and free() for RAII memory management in C++ code.  Tries to be minimally sane.
 ///
 template<typename T>
 class cgc {
@@ -59,13 +59,7 @@ class cgc {
         /// dtor frees all of the remaining allocated memory
         ~cgc()
         {
-            for ( auto &p : ptr_list )
-            {
-                if ( p != (T*) NULL )
-                {
-                    ::free(p);
-                }
-            }
+            cgc<T>::clear();
         }
 
         /// deleted copy ctor
@@ -88,16 +82,11 @@ class cgc {
                 return (T*) NULL;
             }
 
-            T* mem_ptr = (T*) malloc( n * sizeof(T) );
+            T* mem_ptr = (T*) calloc( n, sizeof(T) );
 
             if ( mem_ptr != (T*) NULL )
             {
                 ptr_list.push_back(mem_ptr);
-
-                for ( std::size_t i = 0; i < n; ++i )
-                {
-                    mem_ptr[i] = T{};
-                }
             }
 
             return mem_ptr;

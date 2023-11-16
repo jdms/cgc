@@ -40,10 +40,9 @@
 // Class `gcgc<T>` is meant to test the garbage garbage-collector `ggc`, both
 // `cgc<T>` and `gcgc<T>` expose the same API.  Do not use class 'gcgc<T>'.
 
-#define USE_GCGC
-#if defined(USE_GCGC)
+#if defined(USE_GGC)
     // Class `gcgc.hpp` is just meant to test class `ggc`, do not use it.
-    #include "debug/gcgc.hpp"
+    #include "test/gcgc.hpp"
     template<typename T>
     using cgc = jdms::gcgc<T>;
 
@@ -131,9 +130,7 @@ int main() {
     cgc<char> gc_chars;
 
     char *word = gc_chars.alloc(256); // no more than 255 letters in this word
-    // gc_chars.alloc() is automatically performing: 
-    /* for ( size_t i = 0; i < 256; ++i ) */
-    /*     word[i] = '\0'; */
+    // gc_chars.alloc() automatically initializes memory
 
     word[0] = 'O'; word[1] = 'k'; word[2] = '\0';
 
@@ -146,20 +143,14 @@ int main() {
         double age;
         char *name;
     };
-
-    // It doesn't matter that 'Barista.name' is a pointer as it lies inside 'Barista'.
     cgc<Barista> gc_baristas;
 
     Barista *bptr = gc_baristas.alloc();
-    // gc_baristas.alloc() is automatically performing: 
-    /* for ( size_t i = 0; i < 1; ++i ) */
-    /*     bptr[i] = Barista{}; */
+    // gc_baristas.alloc() automatically initializes memory
 
     bptr->age = 32;
     bptr->name = gc_chars.alloc(256); 
-    // gc_chars.alloc() is automatically performing: 
-    /* for ( size_t i = 0; i < 256; ++i ) */
-    /*     bptr->name[i] = '\0'; */
+    // gc_chars.alloc() automatically initializes memory
 
     char name[4] = { 'F', 'o', 'o', '\0' }; 
     for ( int i = 0; i < 4; ++i )

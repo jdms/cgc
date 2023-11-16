@@ -35,7 +35,7 @@
 namespace jdms {
 
 ///
-/// garbage garbage-collector (ggc): wraps C malloc() and free() for RAII memory management
+/// garbage "garbage-collector" (ggc): wraps malloc() and free() for RAII memory management.
 ///
 class ggc {
     public:
